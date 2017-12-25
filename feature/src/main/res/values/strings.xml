@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="title_home">Scegli tipo classifica</string>
+    <string name="title_classifica">Classifica</string>
+    <string name="esempio_testo_classifica">Qui verrà mostrata la classifica</string>
+    <string name="esempio_testo_home">Qui si potrà scegliere il tipo di classifica</string>
+
+</resources>
