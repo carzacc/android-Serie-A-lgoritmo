@@ -11,29 +11,48 @@ import org.jetbrains.anko.*
 import kotlin.io.readText
 import org.json.*
 import java.net.URL
+import org.json.JSONObject
+import java.lang.Package.getPackages
+import android.widget.ArrayAdapter
 
-data class Squadra(
-        val nomesquadra: String,
-        val punti: Short,
-        val puntiTrad: Short,
-        val golfatti: Short,
-        val golsubiti: Short,
-        val vittorie: Short,
-        val sconfitte: Short,
-        val pareggi: Short)
+
+/*
+        Cosa vogliamo:
+        ListView con
+        nomesquadra: punti
+        nomesquadra: punti
+        ecc.
+ */
+
+
+/*Tipi di dati nell' array
+        nomesquadra: String,
+        punti: Short,
+        puntiTrad: Short,
+        golfatti: Short,
+        golsubiti: Short,
+        vittorie: Short,
+        sconfitte: Short,
+        pareggi: Short
+*/
 
 class MainActivity : AppCompatActivity() {
     private var risultato = "WAIT";
-
+    private var classifica = "Alternativa"
+    private var listanormale: ArrayList<String> = ArrayList<String>()
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                message.setText(R.string.esempio_testo_home)
+              //  message.setText(R.string.esempio_testo_home)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_classifica -> {
-                val squadre = JSONArray(risultato)  
-                message.setText(R.string.esempio_testo_classifica)
+                var squadre = JSONArray(risultato)
+                creaArray(squadre)
+
+                val arrayAdapter = ArrayAdapter<String>(this@MainActivity, android.R.id.message, listanormale)
+
+              //  message.setText(R.string.esempio_testo_classifica)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -47,5 +66,18 @@ class MainActivity : AppCompatActivity() {
             risultato = URL("https://algoritmo-php.herokuapp.com/?g=15").readText()
         }
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+    fun creaArray(phpoutput: JSONArray) {
+        var i=0;
+        while (i<20)    {
+            var oggetto = phpoutput.getJSONObject(i)
+            var nomesquadra = oggetto.getString("nomesquadra")
+            var punti = "a"
+            if(classifica == "Alternativa") {
+                punti = oggetto.getInt("punti").toString()
+            }
+            listanormale[i] = nomesquadra + ": " + punti
+            i++
+        }
     }
 }
