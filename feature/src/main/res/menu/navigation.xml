@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_classifica"
+        android:id="@+id/navigation_classifica_alternativa"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_classifica" />
+        android:title="@string/title_classifica_alternativa" />
+
+    <item
+        android:id="@+id/navigation_classifica_tradizionale"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_classifica_tradizionale" />
+
+    <item
+        android:id="@+id/navigation_classifica_somma"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_classifica_somma" />
 
 
 </menu>

@@ -11,9 +11,11 @@ import org.jetbrains.anko.*
 import kotlin.io.readText
 import org.json.*
 import java.net.URL
-import org.json.JSONObject
-import java.lang.Package.getPackages
 import android.widget.ArrayAdapter
+import android.widget.ListView
+import java.util.Arrays.asList
+
+
 
 
 /*
@@ -37,22 +39,65 @@ import android.widget.ArrayAdapter
 */
 
 class MainActivity : AppCompatActivity() {
-    private var risultato = "WAIT";
-    private var classifica = "Alternativa"
-    private var listanormale: ArrayList<String> = ArrayList<String>()
+    private var risultato = "RITENTA SARAI PIU' FORTUNATO"
+    private var listanormale: Array<String> = Array<String>(20,{ " " })
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
-              //  message.setText(R.string.esempio_testo_home)
+            R.id.navigation_classifica_alternativa -> {
+                if(risultato == "RITENTA SARAI PIU' FORTUNATO") {
+                    toast("Riprova FRA UN ATTIMO a premere Classifica")
+                } else {
+                    var squadre = JSONArray(risultato)
+                    creaArray(squadre, "Alternativa")
+                    val lista: ListView = findViewById(R.id.message)
+                    val arraylistsquadre = listanormale.asList()
+
+                    val arrayAdapter = ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_list_item_1,
+                            arraylistsquadre
+                    )
+                    lista.setAdapter(arrayAdapter)
+                }
+              //  message.setText(R.string.esempio_testo_classifica)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_classifica -> {
-                var squadre = JSONArray(risultato)
-                creaArray(squadre)
+            R.id.navigation_classifica_tradizionale -> {
+                if(risultato == "RITENTA SARAI PIU' FORTUNATO") {
+                    toast("Riprova FRA UN ATTIMO a premere Classifica")
+                } else {
+                    var squadre = JSONArray(risultato)
+                    creaArray(squadre, "Tradizionale")
+                    val lista: ListView = findViewById(R.id.message)
+                    val arraylistsquadre = listanormale.asList()
 
-                val arrayAdapter = ArrayAdapter<String>(this@MainActivity, android.R.id.message, listanormale)
+                    val arrayAdapter = ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_list_item_1,
+                            arraylistsquadre
+                    )
+                    lista.setAdapter(arrayAdapter)
+                }
+                //  message.setText(R.string.esempio_testo_classifica)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_classifica_somma -> {
+                if(risultato == "RITENTA SARAI PIU' FORTUNATO") {
+                    toast("Riprova FRA UN ATTIMO a premere Classifica")
+                } else {
+                    var squadre = JSONArray(risultato)
+                    creaArray(squadre, "Somma")
+                    val lista: ListView = findViewById(R.id.message)
+                    val arraylistsquadre = listanormale.asList()
 
-              //  message.setText(R.string.esempio_testo_classifica)
+                    val arrayAdapter = ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_list_item_1,
+                            arraylistsquadre
+                    )
+                    lista.setAdapter(arrayAdapter)
+                }
+                //  message.setText(R.string.esempio_testo_classifica)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -63,21 +108,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         doAsync {
-            risultato = URL("https://algoritmo-php.herokuapp.com/?g=15").readText()
+            risultato = URL("https://algoritmo-php.herokuapp.com/").readText()
+            uiThread    {
+                toast("Tutto caricato, scegli che classifica vuoi vedere")
+            }
         }
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
-    fun creaArray(phpoutput: JSONArray) {
-        var i=0;
-        while (i<20)    {
+    fun creaArray(phpoutput: JSONArray, tipoclassifica: String) {
+        for (i in listanormale.indices)    {
             var oggetto = phpoutput.getJSONObject(i)
             var nomesquadra = oggetto.getString("nomesquadra")
             var punti = "a"
-            if(classifica == "Alternativa") {
-                punti = oggetto.getInt("punti").toString()
+            when (tipoclassifica) {
+                "Alternativa" -> {
+                    punti = oggetto.getDouble("punti").toString()
+                }
+                "Tradizionale" ->   {
+                    punti = oggetto.getInt("puntiTrad").toString()
+                }
+                "Somma" ->   {
+                    val puntint = oggetto.getDouble("punti") + + oggetto.getInt("puntiTrad")
+                    punti = puntint.toString()
+                }
             }
             listanormale[i] = nomesquadra + ": " + punti
-            i++
         }
     }
 }
